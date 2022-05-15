@@ -1,0 +1,39 @@
+# Wordpress #
+# Access via "http://localhost:8888"
+#   (or "http://$(docker-machine ip):8080" if using docker-machine)
+#
+
+version: '3.2'
+
+services:     
+  php-fpm:
+    # build:
+    #   context: ./docker/php-fpm/
+    #   dockerfile: Dockerfile
+    # image: link-php-fpm
+    image: erenygamal12/link-php-fpm:8.0
+    #Enable path conversion from Windows-style to Unix-style in volume definitions.
+    environment:
+      - COMPOSE_CONVERT_WINDOWS_PATHS=1
+    volumes:
+      - ./:/var/www/html
+    restart: always
+    expose:
+      - 9000
+
+  nginx:
+    # build:
+    #   context: ./docker/nginx/
+    #   dockerfile: Dockerfile
+    # image: link-ngix
+    image: erenygamal12/link-nginx:latest
+    #Enable path conversion from Windows-style to Unix-style in volume definitions.
+    environment:
+      - COMPOSE_CONVERT_WINDOWS_PATHS=1
+    volumes:
+      - ./:/var/www/html
+    ports:
+      - '8888:80'
+    depends_on:
+      - php-fpm 
+    restart: always
